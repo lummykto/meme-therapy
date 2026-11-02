@@ -110,16 +110,6 @@
 
   .btn-main:hover { box-shadow: 0 12px 28px rgba(255, 45, 85, 0.6); }
 
-  .btn-heart {
-    margin-top: 26px;
-    background: linear-gradient(135deg, #a855f7, #ec4899);
-    color: white;
-    font-size: 1rem;
-    padding: 14px 28px;
-    border-radius: 999px;
-    box-shadow: 0 8px 20px rgba(168, 85, 247, 0.4);
-  }
-
   /* Финал — формула сердца */
   #final {
     display: none;
@@ -181,11 +171,76 @@
     color: #a06a7a;
     margin-top: 14px;
   }
+
+  /* ==== СТИЛИ ДЛЯ ПРИВЕТСТВЕННОГО ЭКРАНА (ДОБАВЛЕНО) ==== */
+  .welcome-screen {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(135deg, #ffdde1 0%, #ee9ca7 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    transition: opacity 0.5s ease, visibility 0.5s ease;
+  }
+
+  .welcome-screen.hidden {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  .welcome-content {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 40px 30px;
+    border-radius: 28px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 20px 60px rgba(200, 60, 100, 0.3);
+    animation: pop 0.6s ease;
+  }
+
+  .welcome-emoji {
+    font-size: 4rem;
+    margin-bottom: 10px;
+    animation: bounce 2s infinite;
+  }
+
+  .welcome-content h2 {
+    color: #c2185b;
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+  }
+
+  .welcome-content p {
+    color: #6d3b4a;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 25px;
+  }
+
+  .btn-start {
+    background: linear-gradient(135deg, #ff5e8a, #ff2d55);
+    color: white;
+    font-size: 1.2rem;
+    padding: 15px 40px;
+    border-radius: 999px;
+    border: none;
+    cursor: pointer;
+    font-weight: 700;
+    box-shadow: 0 8px 20px rgba(255, 45, 85, 0.45);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+
+  .btn-start:hover {
+    box-shadow: 0 12px 28px rgba(255, 45, 85, 0.6);
+    transform: translateY(-2px);
+  }
 </style>
 </head>
 <body>
 
- <!-- НОВЫЙ БЛОК: Приветствие -->
+ <!-- Блок приветствия -->
  <div id="welcomeScreen" class="welcome-screen">
    <div class="welcome-content">
      <div class="welcome-emoji">🎁</div>
@@ -231,19 +286,17 @@
 
 <script>
   // ==== База мемов ====
-  // Замени URL на свои картинки (можно залить в папку images/ рядом с файлом)
-  // Сейчас используются забавные картинки с плейсхолдеров + эмодзи-подписи.
-    const memes = [
-    { img: "meme1.jpg" },
-    { img: "meme2.jpg" },
-    { img: "meme3.jpg" },
-    { img: "meme4.jpg" },
-    { img: "meme5.jpg" },
-    { img: "meme6.jpg" },
-    { img: "meme7.jpg" },
-    { img: "meme8.jpg" },
-    { img: "meme9.jpg" },
-    { img: "meme10.jpg" },
+  const memes = [
+    { img: "meme1.JPG" },
+    { img: "meme2.JPG" },
+    { img: "meme3.JPG" },
+    { img: "meme4.JPG" },
+    { img: "meme5.JPG" },
+    { img: "meme6.JPG" },
+    { img: "meme7.JPG" },
+    { img: "meme8.JPG" },
+    { img: "meme9.JPG" },
+    { img: "meme10.JPG" },
   ];
 
   const memeBox = document.getElementById('memeBox');
@@ -257,9 +310,14 @@
   const MEMES_BEFORE_HEART = 5; // после скольких мемов показать формулу сердца
   let usedIndices = [];
 
+  // ==== Функция для кнопки "Поехали" (ДОБАВЛЕНО) ====
+  function startSite() {
+    const welcome = document.getElementById('welcomeScreen');
+    welcome.classList.add('hidden');
+  }
+
   // ==== Показ мема ====
   function showRandomMeme() {
-    // если все мемы показаны — сброс
     if (usedIndices.length >= memes.length) usedIndices = [];
 
     let idx;
@@ -277,7 +335,6 @@
     shownCount++;
     counterEl.textContent = `Мемов просмотрено: ${shownCount} 💖`;
 
-    // После N мемов показываем финал с сердцем
     if (shownCount >= MEMES_BEFORE_HEART) {
       memeBtn.textContent = "Ещё мем! 😄";
       if (finalEl.style.display !== 'block') {
@@ -291,27 +348,20 @@
   memeBtn.addEventListener('click', showRandomMeme);
 
   // ==== Рисование сердца по формуле ====
-  // (x² + y² − 1)³ − x²·y³ = 0
-  // Проходим по пикселям канваса и закрашиваем те, где выражение <= 0
   function drawHeart() {
     const w = heartCanvas.width;
     const h = heartCanvas.height;
     const img = ctx.createImageData(w, h);
     const data = img.data;
 
-    // Масштаб: координаты x,y примерно в диапазоне [-1.3, 1.3]
     const scale = 1.45;
     const aspect = w / h;
 
-    let t = 0; // для градиента
-
     for (let py = 0; py < h; py++) {
       for (let px = 0; px < w; px++) {
-        // переводим пиксель в математические координаты
         const x = ((px / w) * 2 - 1) * scale * aspect;
         const y = (1 - (py / h) * 2) * scale;
 
-        // сама формула
         const x2 = x * x;
         const y2 = y * y;
         const expr = Math.pow(x2 + y2 - 1, 3) - x2 * Math.pow(y, 3);
@@ -319,7 +369,6 @@
         const i = (py * w + px) * 4;
 
         if (expr <= 0) {
-          // внутри сердца — заливка градиентом от розового к красному
           const ratio = py / h;
           const r = 255;
           const g = Math.floor(45 + ratio * 80);
@@ -329,20 +378,17 @@
           data[i + 2] = b;
           data[i + 3] = 255;
         } else {
-          // снаружи — прозрачно
           data[i + 3] = 0;
         }
       }
     }
 
     ctx.putImageData(img, 0, 0);
-
-    // лёгкое свечение-обводка поверх
     ctx.strokeStyle = "rgba(255,255,255,0.6)";
     ctx.lineWidth = 1;
   }
 
-  // Небольшая анимация пульса для canvas
+  // Анимация пульса для canvas
   let pulse = 0;
   function animateHeart() {
     pulse += 0.05;
