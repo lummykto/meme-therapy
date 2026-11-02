@@ -185,9 +185,19 @@
 </head>
 <body>
 
+ <!-- НОВЫЙ БЛОК: Приветствие -->
+ <div id="welcomeScreen" class="welcome-screen">
+   <div class="welcome-content">
+     <div class="welcome-emoji">🎁</div>
+     <h2>Привет!</h2>
+     <p>Здесь пока что <b>10 мемов</b>.<br>Если тебе понравится — я буду добавлять ещё! 😉</p>
+     <button class="btn-start" onclick="startSite()">Поехали!</button>
+   </div>
+ </div>
+
 <div class="card">
   <h1>Мем-терапия 💖</h1>
-  <p class="subtitle">Нажми на кнопку — и грусть испарится</p>
+  <p class="subtitle">Нажми на кнопку — и грусть испарится (надеюсь)</p>
 
   <div class="meme-box" id="memeBox">
     <div class="placeholder">🐱</div>
@@ -215,7 +225,7 @@
       </small>
     </div>
 
-    <p class="signature">Ты — моё любимое уравнение, у которого всегда есть решение ❤️</p>
+    <p class="signature">Ты - это моё любимое уравнение, у которого всегда есть решение❤️</p>
   </div>
 </div>
 
@@ -223,55 +233,17 @@
   // ==== База мемов ====
   // Замени URL на свои картинки (можно залить в папку images/ рядом с файлом)
   // Сейчас используются забавные картинки с плейсхолдеров + эмодзи-подписи.
-  const memes = [
-    {
-      img: "https://i.imgflip.com/1ur9b0.jpg",
-      caption: "Когда сказала «я не голодная», но съела половину моей картошки 🍟"
-    },
-    {
-      img: "https://i.imgflip.com/26am.jpg",
-      caption: "Я в 7 утра: «сегодня точно лягу пораньше». Я в 2 ночи: 📱"
-    },
-    {
-      img: "https://i.imgflip.com/1e7ql7.jpg",
-      caption: "Мой план на день: 1) быть продуктивной. 2) ...ладно, завтра."
-    },
-    {
-      img: "https://i.imgflip.com/2wifvo.jpg",
-      caption: "Когда кот смотрит на тебя так, будто ты — его личный официант 🐈"
-    },
-    {
-      img: "https://i.imgflip.com/4t0m5.jpg",
-      caption: "«Я только посмотрю одну серию» — 6 часов спустя: 😵‍💫"
-    },
-    {
-      img: "https://i.imgflip.com/1bgw.jpg",
-      caption: "Проснулась красивой? Нет, проснулась и уже хочу спать 😴"
-    },
-    {
-      img: "https://i.imgflip.com/24y43o.jpg",
-      caption: "Моя диета: с понедельника. Сегодня — среда. Ну ладно, со следующего понедельника."
-    },
-    {
-      img: "https://i.imgflip.com/1otk96.jpg",
-      caption: "Когда кто-то сказал «расслабься», а ты уже 3 часа переживаешь из-за ерунды 😅"
-    },
-    {
-      img: "https://i.imgflip.com/3si4.jpg",
-      caption: "Я и мой внутренний критик: он говорит «ты не справишься», я говорю «зато я милая» 💅"
-    },
-    {
-      img: "https://i.imgflip.com/2fm6x.jpg",
-      caption: "Мой уровень уверенности: зашла в комнату и забыла, зачем. Но выгляжу отлично 💃"
-    },
-    {
-      img: "https://i.imgflip.com/1jwhww.jpg",
-      caption: "Когда сказали «не переживай», а ты уже придумала 15 плохих сценариев 🌀"
-    },
-    {
-      img: "https://i.imgflip.com/2kbn1e.jpg",
-      caption: "Мозг: «давай вспомним все неловкие моменты за 10 лет». Я: «давай не будем» 🧠"
-    }
+    const memes = [
+    { img: "meme1.jpg" },
+    { img: "meme2.jpg" },
+    { img: "meme3.jpg" },
+    { img: "meme4.jpg" },
+    { img: "meme5.jpg" },
+    { img: "meme6.jpg" },
+    { img: "meme7.jpg" },
+    { img: "meme8.jpg" },
+    { img: "meme9.jpg" },
+    { img: "meme10.jpg" },
   ];
 
   const memeBox = document.getElementById('memeBox');
@@ -300,7 +272,6 @@
 
     memeBox.innerHTML = `
       <img src="${meme.img}" alt="мем" onerror="this.style.display='none'">
-      <div class="meme-caption">${meme.caption}</div>
     `;
 
     shownCount++;
